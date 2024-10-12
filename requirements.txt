@@ -1,0 +1,11 @@
+Django==3.2.12
+django-ckeditor==6.4.0
+django-cors-headers==3.6.0
+django-jazzmin==2.6.0
+djangorestframework==3.13.1
+filetype==1.2.0
+ipaddress==1.0.16
+Pillow==8.4.0
+psycopg2==2.8.6
+python-dateutil==2.8.2
+python-dotenv==0.15.0

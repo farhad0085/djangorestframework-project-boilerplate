@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      a {
+        color: rgb(105, 115, 252);
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .loginButton {
+        margin: 20px 0;
+        padding: 10px 10px;
+        width: 160px;
+        background-color: rgb(40, 185, 230);
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .loginButton:hover {
+        background-color: rgb(35, 165, 204);
+      }
+      .loginButton:focus,:active {
+        outline: none;
+      }
+    </style>
+  </head>
+  <body style="background-color: #f1f3f9; font-family: sans-serif">
+    <div style=" font-family: sans-serif; padding: 20px; max-width: 800px; margin:  0 auto;">
+      <p>Hi {{user_display_name}},</p>
+      <p>
+        Thanks for signing up with SiteName. You're receiving this email because you've just registered an account in
+        <a href="{{ WEBSITE_BASE_URL }}">SiteName</a>. We wish you a warm welcome!
+      </p>
+
+        <a href="{{ WEBSITE_BASE_URL }}/login">
+          Login here
+        </a>
+
+        <p style="margin-bottom: 5px;">
+          Link not working for you? Copy the url below into your browser:
+        </p>
+        
+        <a href="{{ WEBSITE_BASE_URL }}/login" style="color: black; margin-top: 0px;">
+          {{ WEBSITE_BASE_URL }}/login
+        </a>
+    </div>
+  </body>
+</html>
