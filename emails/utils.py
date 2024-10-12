@@ -3,6 +3,7 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.conf import settings
 from django.utils import timezone
 from emails.models import Attachment, Email
+import traceback
 
 
 class EmailThread(threading.Thread):
@@ -14,7 +15,6 @@ class EmailThread(threading.Thread):
         recipient_list,
         fail_silently,
         html_message,
-        save=True,
         **kwargs
     ):
         self.subject = subject
@@ -23,7 +23,6 @@ class EmailThread(threading.Thread):
         self.from_email = from_email
         self.fail_silently = fail_silently
         self.html_message = html_message
-        self.save=save,
         self.kwargs = kwargs
         threading.Thread.__init__(self)
 
@@ -33,9 +32,9 @@ class EmailThread(threading.Thread):
         # pop files first, files is a list of file objects
         attachment_files = self.kwargs.pop("files", []) or []
 
-        if self.save:
-            self.save_record(attachments=attachment_files)
-        else:
+        email_obj = self.save_record(attachments=attachment_files)
+        
+        try:
             msg = EmailMultiAlternatives(
                 subject=self.subject,
                 body=self.message,
@@ -53,6 +52,14 @@ class EmailThread(threading.Thread):
                     mimetype=filetype.guess_mime(file.read()),
                 )
             msg.send(self.fail_silently)
+
+            # update email status
+            email_obj.is_sent = True
+            email_obj.save()
+        except Exception as e:
+            email_obj.is_sent = False
+            email_obj.log = "".join(traceback.format_exception(None, e, e.__traceback__))
+            email_obj.save()
 
 
     def get_connection_data(self):
@@ -85,3 +92,4 @@ class EmailThread(threading.Thread):
         email_obj.send_time = timezone.now()
         email_obj.attachments.set(attachment_objs)
         email_obj.save()
+        return email_obj
