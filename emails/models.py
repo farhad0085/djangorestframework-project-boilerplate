@@ -21,25 +21,3 @@ class Email(models.Model):
     status = models.CharField(max_length=50, null=True, blank=True)
     log = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-
-    def send_mail(self):
-        # need to import here, otherwise circular import will happen
-        from emails.utils import EmailThread
-
-        try:
-            EmailThread(
-                subject=self.subject,
-                from_email=self.from_email,
-                recipient_list=self.recipients,
-                fail_silently=True,
-                message=self.body,
-                html_message=self.body,
-                files=[attachment.file for attachment in self.attachments.all()],
-                cc=self.cc,
-                save=False
-            ).run()
-            self.status = "SUCCESS"
-        except Exception as e:
-            self.log = f"Couldn't send email. Error: {e}"
-            self.status = "FAILED"
-        self.save()
